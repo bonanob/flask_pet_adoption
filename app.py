@@ -31,6 +31,37 @@ def pet(id):
     return render_template("pet.html", pet=pet)
 
 
+@app.route("/edit/<id>", methods=['GET', 'POST'])
+def edit_pet(id):
+    pet = Pet.query.get(id)
+    if request.form:
+        pet.name = request.form['name']
+        pet.age = request.form['age']
+        pet.breed = request.form['breed']
+        pet.color = request.form['color']
+        pet.size = request.form['size']
+        pet.weight = request.form['weight']
+        pet.url = request.form['url']
+        pet.url_tag = request.form['alt']
+        pet.pet_type = request.form['pet']
+        pet.gender = request.form['gender']
+        pet.spay = request.form['spay']
+        pet.house_trained = request.form['housetrained']
+        pet.description = request.form['description']
+        db.session.commit()
+        return redirect(url_for('index'))
+
+    return render_template("editpet.html", pet=pet)
+
+
+@app.route("/delete/<id>")
+def delete_pet(id):
+    pet = Pet.query.get(id)
+    db.session.delete(pet)
+    db.session.commit()
+    return redirect(url_for('index'))
+
+
 if __name__ == '__main__':
     db.create_all()
     app.run(debug=True, port=8000, host='127.0.0.1')
